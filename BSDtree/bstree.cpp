@@ -74,7 +74,7 @@ int main(void){
 	
 	if(search(root, 7)){
 		printf("achou\n");
-		};
+		}
 	else{
 		printf("nao achou\n");
 	}
