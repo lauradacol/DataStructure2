@@ -12,7 +12,6 @@ struct node{
 node * search(node * r, int key){
 	if(!r || r->key == key){
 		return r;
-		printf("Achou!\n");
 	}
 	if(key <= r->key){
 		return search(r->left, key);	
@@ -73,7 +72,12 @@ int main(void){
 		root = insert(root,n);
 	}
 	
-	search(root, 7);
+	if(search(root, 7)){
+		printf("achou\n");
+		};
+	else{
+		printf("nao achou\n");
+	}
 	
 	return 0;
 }
