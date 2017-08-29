@@ -8,7 +8,6 @@ struct node{
 
 //busca por uma chave k na árvore com raiz r
 //caso a chave não estiver na árvore retorna NULL
-
 node * search(node * r, int key){
 	if(!r || r->key == key){
 		return r;
@@ -20,11 +19,25 @@ node * search(node * r, int key){
 	return search(r->right, key);
 }
 
-/*
+
 //mostra todas as chaves da árvore
 void * print(node * r){
+	node * aux = r;
 	
-}*/
+	for(aux = r; aux!=NULL; aux = aux->left){
+		printf("%d ",aux->key); 
+	}
+	
+	for(aux = r->right; aux!=NULL; aux = aux->right){
+		printf("%d ", aux->key);
+	}
+}
+
+void * printOrdenado(node * r){
+	node * aux = r;
+	
+	
+}
 
 //insere um nodo com chave key na árvore com raiz r
 //retorna um ponteiro para a raiz da árvore
@@ -32,7 +45,7 @@ node * insert(node * r, int key){
 	node * it = r;
 	
 	node * n = (node *)malloc(sizeof(node)); //cria um novo nodo
-	n->left  = n->right = NULL;
+	n->left = n->right = NULL;
 	n->key = key;
 	
 	if(!r){
@@ -78,6 +91,8 @@ int main(void){
 	else{
 		printf("nao achou\n");
 	}
+	
+	print(root);
 	
 	return 0;
 }
