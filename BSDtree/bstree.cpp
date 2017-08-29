@@ -39,6 +39,17 @@ void * printOrdenado(node * r){
 	
 }
 
+//in Order
+int inOrder(node * t){
+	if(t!=NULL){
+		inOrder(t->left);
+		
+		printf("%d ", t->key);
+		
+		inOrder(t->right);
+	}	
+}
+
 //insere um nodo com chave key na árvore com raiz r
 //retorna um ponteiro para a raiz da árvore
 node * insert(node * r, int key){
@@ -92,7 +103,7 @@ int main(void){
 		printf("nao achou\n");
 	}
 	
-	print(root);
+	inOrder(root);
 	
 	return 0;
 }
