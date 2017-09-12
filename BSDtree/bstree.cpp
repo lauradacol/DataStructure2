@@ -6,6 +6,42 @@ struct node{
 	node * left, * right; //ponteiro para os filhos
 };
 
+node * insert2(node * r, int key){
+	node * aux = r;	
+	
+	node * n = (node*)malloc(sizeof(node));
+	n->key = key;
+	n->left = n->right = NULL;
+	
+	if(r == NULL){
+		return n;
+	}
+	
+	while(1){
+		if(key < aux->key){
+			if(aux->left == NULL){
+				aux->left = n;
+				return r;
+			}
+			else{
+				aux = aux->left;
+			}
+		}
+		
+		else{
+			if(aux->right == NULL){
+				aux->right = n;
+				return r;
+			}
+			else{
+				aux = aux->right;
+			}			
+		}
+		
+	}		
+	
+}
+
 //busca por uma chave k na árvore com raiz r
 //caso a chave não estiver na árvore retorna NULL
 node * search(node * r, int key){
@@ -93,7 +129,7 @@ int main(void){
 	node * root = NULL;
 	
 	while(scanf("%d", &n)){
-		root = insert(root,n);
+		root = insert2(root,n);
 	}
 	
 	if(search(root, 7)){
