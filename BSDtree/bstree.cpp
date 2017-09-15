@@ -111,27 +111,20 @@ void swap(node ** a, node ** b){
 	
 }
 
+node ** getParent(node * v){
+		if(v->parent->left == v){	
+			return &(v->parent->left);
+		}
+		else{
+			return &(v->parent->right);	
+		}
+}
+
 void transplant(node * v, node * minV){
 	swap(&(minV->left), &(v->left));
 	swap(&(minV->right), &(v->right));
 	
-	if(v->parent->left == v){
-		if(minV->parent->left == v){	
-			swap(&(v->parent->left), &(minV->parent->left));
-		}
-		else{
-			swap(&(v->parent->left), &(minV->parent->right));		
-		}
-	}
-				
-	else{
-		if(minV->parent->right == v){	
-			swap(&(v->parent->right), &(minV->parent->left));
-		}
-		else{
-			swap(&(v->parent->right), &(minV->parent->right));		
-		}	
-	}
+	swap(getParent(v),getParent(minV));
 	
 	swap(&(minV->parent), &(v->parent));
 	
@@ -155,7 +148,8 @@ void * deleteNode(node * r, int key){
 	else if(v->left != NULL && v->right == NULL){
 		v->left->parent = v->parent;
 		
-		//se v for filho à esquerda
+		//se v for filho à esquerdagit commit --amend --reset-author
+
 		if(v->parent->left == v){
 			v->parent->left = v->left;
 		}
