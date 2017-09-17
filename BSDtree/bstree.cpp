@@ -50,10 +50,10 @@ node * insert(node * r, int key){
 }
 
 /*Imprime a árvore bonitinha*/
-void imp(node * n, int h){
+void drawTree(node * n, int h){
 	
 	if(n->left != NULL){
-		imp(n->left, h+1);	
+		drawTree(n->left, h+1);	
 	}
 
 	int i;
@@ -63,10 +63,39 @@ void imp(node * n, int h){
 	printf("%d\n", n->key);
 	
 	if(n->right != NULL){
-		imp(n->right, h+1);
+		drawTree(n->right, h+1);
 	}
 }
 
+//Percurso in Order
+void inOrder(node * r){
+	if(r!=NULL){
+		inOrder(r->left);
+		
+		printf("%d ", r->key);
+		
+		inOrder(r->right);
+	}	
+}
+
+//Percurso pre Order
+void preOrder(node * r){
+	if(r!=NULL){
+		printf("%d ", r->key);		
+		preOrder(r->left);				
+		preOrder(r->right);
+	}	
+}
+
+//Percurso Pos Order
+void posOrder(node * r){
+	if(r!=NULL){
+		posOrder(r->left);
+		posOrder(r->right);
+		printf("%d ", r->key);
+		
+	}
+}
 
 /*busca por uma chave k na árvore com raiz r
 caso a chave não estiver na árvore retorna NULL*/
@@ -97,17 +126,6 @@ node * minTree(node * r){
 	}
 	
 	return min;
-}
-
-//in Order
-int inOrder(node * t){
-	if(t!=NULL){
-		inOrder(t->left);
-		
-		printf("%d ", t->key);
-		
-		inOrder(t->right);
-	}	
 }
 
 /*Troca dois ponteiros de lugar*/
@@ -206,19 +224,6 @@ void * deleteNode(node * r, int key){
 	free(v);
 }
 
-//mostra todas as chaves da árvore
-void * print(node * r){
-	node * aux = r;
-	
-	for(aux = r; aux!=NULL; aux = aux->left){
-		printf("%d ",aux->key); 
-	}
-	
-	for(aux = r->right; aux!=NULL; aux = aux->right){
-		printf("%d ", aux->key);
-	}
-}
-
 int main(void){
 	
 	int n;
@@ -238,17 +243,33 @@ int main(void){
 	printf("PERCURSO IN ORDER ANTES DA DELEÇÃO\n");
 	inOrder(root);
 	
-	printf("\n\nDESENHO DA ÁRVORE ANTES DA DELEÇÃO\n");	
-	imp(root, 0);	
+	printf("\n\nPERCURSO PRE ORDER ANTES DA DELEÇÃO\n");
+	preOrder(root);	
 	
+	printf("\n\nPERCURSO POS ORDER ANTES DA DELEÇÃO\n");
+	posOrder(root);		
+	
+	printf("\n\nDESENHO DA ÁRVORE ANTES DA DELEÇÃO\n");	
+	drawTree(root, 0);	
+	
+	printf("\n#########################################\n");
+	printf("############ DELETANDO O 3 ##############\n");
+	printf("#########################################\n\n");	
+
 	int x = 3;
 	deleteNode(root, x);
 	
 	printf("PERCURSO IN ORDER APÓS DA DELEÇÃO\n");
 	inOrder(root);
+
+	printf("\n\nPERCURSO PRE ORDER APÓS DA DELEÇÃO\n");
+	preOrder(root);	
+	
+	printf("\n\nPERCURSO POS ORDER APÓS DA DELEÇÃO\n");
+	posOrder(root);
 	
 	printf("\n\nDESENHO DA ÁRVORE APÓS DA DELEÇÃO\n");	
-	imp(root, 0);
+	drawTree(root, 0);
 	
 	return 0;
 }
