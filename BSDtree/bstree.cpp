@@ -49,6 +49,7 @@ node * insert(node * r, int key){
 	}		
 }
 
+/*Imprime a árvore bonitinha*/
 void imp(node * n, int h){
 	
 	if(n->left != NULL){
@@ -82,7 +83,14 @@ node * search(node * r, int key){
 
 /*Procura o menor nodo de uma sub-arvore*/
 node * minTree(node * r){
-	node * min = r->right;
+	node * min;
+	if(r->right != NULL){
+		min = r->right;	
+	}
+	
+	else{
+		min = r;
+	}
 	
 	while(min->left !=NULL){
 		min = min->left;
@@ -102,8 +110,8 @@ int inOrder(node * t){
 	}	
 }
 
+/*Troca dois ponteiros de lugar*/
 void swap(node ** a, node ** b){
-	//printf("a = %d, b = %d\n", *a, *b);
 	node * aux1 = *a;
 	node * aux2 = *b;
 	*a = aux2;
@@ -111,6 +119,7 @@ void swap(node ** a, node ** b){
 	
 }
 
+/*Retorna o ponteiro para o pai*/
 node ** getParent(node * v){
 		if(v->parent->left == v){	
 			return &(v->parent->left);
@@ -120,6 +129,7 @@ node ** getParent(node * v){
 		}
 }
 
+/*Trasplanta dois nodos*/
 void transplant(node * v, node * minV){
 	swap(&(minV->left), &(v->left));
 	swap(&(minV->right), &(v->right));
@@ -130,22 +140,33 @@ void transplant(node * v, node * minV){
 	
 }
 
+/*Deleta um nodo se ele é uma folha*/
+void deleteFolha(node * v){
+	node ** pai = getParent(v);
+	*pai = NULL;	
+
+/*		
+	if(v->parent->left == v){
+		v->parent->left = NULL;
+	}	
+	else{
+		v->parent->right = NULL;
+	}
+	*/		
+}	
+
+
+/*Deleta o nodo*/
 void * deleteNode(node * r, int key){
 	node * v = search(r, key);
 	
 	//se v é uma folha
 	if(v->left == NULL && v->right == NULL){
-		if(v->parent->left == v){
-			v->parent->left = NULL;
-		}	
-		else{
-			v->parent->right = NULL;
-		}
-		
-	}	
-	
+		deleteFolha(v);
+	}
+
 	//se v tem só um filho à esquerda
-	else if(v->left != NULL && v->right == NULL){
+	if(v->left != NULL && v->right == NULL){
 		v->left->parent = v->parent;
 		
 		//se v for filho à esquerdagit commit --amend --reset-author
@@ -179,36 +200,10 @@ void * deleteNode(node * r, int key){
 		//procura o menor nodo da sub-arvore cuja v é a raiz
 		node * minV = minTree(v);
 		transplant(v, minV);
-
+		deleteFolha(v);
+		
 	}
-
 	free(v);
-}
-
-
-
-
-/*Procura o pai de um nodo*/
-node * findParent(node * r, int key){
-	node * p = NULL;
-	node * n = r;
-	
-	while(1){
-		if(n->key == key){
-			return p;
-			break;
-		}
-		
-		else if(key > n->key){
-			p = n;
-			n = n->right;
-		}
-		
-		else if(key < n->key){
-			p = n;
-			n = n->left;
-		}		
-	}
 }
 
 //mostra todas as chaves da árvore
@@ -224,38 +219,36 @@ void * print(node * r){
 	}
 }
 
-void * printOrdenado(node * r){
-	node * aux = r;
-	
-	
-}
-
-
-
-//remove o nodo da árvore com raiz r que possui chave igual a key
-//(lembra que tem que dar free no nodo)
-void remove(node * r, int key);
-
 int main(void){
 	
 	int n;
 	node * root = NULL;
+
+	/*Inserindo chaves na árvore*/
+	root = insert(root,10);
+	root = insert(root,8);
+	root = insert(root,16);
+	root = insert(root,3);
+	root = insert(root,2);
+	root = insert(root,6);
+	root = insert(root,1);
+	root = insert(root,5);
+	root = insert(root,7);	
 	
-	while(scanf("%d", &n)){
-		root = insert(root,n);
-	}
+	printf("PERCURSO IN ORDER ANTES DA DELEÇÃO\n");
+	inOrder(root);
+	
+	printf("\n\nDESENHO DA ÁRVORE ANTES DA DELEÇÃO\n");	
+	imp(root, 0);	
 	
 	int x = 3;
-
-	//printf("minimo da sub 3 %d\n", minTree(search(root, 3))->key);
-		
-	imp(root, 0);
-//	deleteNode(root, x);
-	printf("\n\n");
-	//imp(root,0);
+	deleteNode(root, x);
 	
-	transplant(search(root, 3), search(root, 7));
-	imp(root,0);
+	printf("PERCURSO IN ORDER APÓS DA DELEÇÃO\n");
+	inOrder(root);
+	
+	printf("\n\nDESENHO DA ÁRVORE APÓS DA DELEÇÃO\n");	
+	imp(root, 0);
 	
 	return 0;
 }
