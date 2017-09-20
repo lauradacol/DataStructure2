@@ -139,12 +139,12 @@ void swap(node ** a, node ** b){
 
 /*Retorna o ponteiro para o pai*/
 node ** getParent(node * v){
-		if(v->parent->left == v){	
-			return &(v->parent->left);
-		}
-		else{
-			return &(v->parent->right);	
-		}
+	if(v->parent->left == v){	
+		return &(v->parent->left);
+	}
+	else{
+		return &(v->parent->right);	
+	}
 }
 
 /*Trasplanta dois nodos*/
@@ -173,7 +173,6 @@ void deleteFolha(node * v){
 	*/		
 }	
 
-
 /*Deleta o nodo*/
 void * deleteNode(node * r, int key){
 	node * v = search(r, key);
@@ -185,33 +184,14 @@ void * deleteNode(node * r, int key){
 
 	//se v tem só um filho à esquerda
 	if(v->left != NULL && v->right == NULL){
-		v->left->parent = v->parent;
-		
-		//se v for filho à esquerdagit commit --amend --reset-author
-
-		if(v->parent->left == v){
-			v->parent->left = v->left;
-		}
-				
-		//se v for filho à direita
-		else{
-			v->parent->right = v->left;
-		}	
+		transplant(v, v->right);
+		deleteFolha(v->left);
 	}
 	
 	//se v tem só um filho à direita
-	else if(v->right != NULL && v->right == NULL){
-		v->right->parent = v->parent;
-
-		//se v for filho à esquerda
-		if(v->parent->left == v){
-			v->parent->left = v->right;
-		}
-				
-		//se v for filho à direita
-		else{
-			v->parent->right = v->right;
-		}		
+	else if(v->right != NULL && v->left == NULL){
+		transplant(v, v->right);
+		deleteFolha(v->right);
 	}
 	
 	else{
@@ -238,7 +218,8 @@ int main(void){
 	root = insert(root,6);
 	root = insert(root,1);
 	root = insert(root,5);
-	root = insert(root,7);	
+	root = insert(root,7);
+	root = insert(root, 20);	
 	
 	printf("PERCURSO IN ORDER ANTES DA DELEÇÃO\n");
 	inOrder(root);
@@ -256,7 +237,7 @@ int main(void){
 	printf("############ DELETANDO O 3 ##############\n");
 	printf("#########################################\n\n");	
 
-	int x = 3;
+	int x = 2;
 	deleteNode(root, x);
 	
 	printf("PERCURSO IN ORDER APÓS DA DELEÇÃO\n");
