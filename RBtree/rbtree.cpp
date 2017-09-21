@@ -40,8 +40,8 @@ void insert(rbtree * t, int k){
 	node * y;
 	node * x;
 	
-	y = t->nill;
-	x = t->root;
+	y = t->nill; //pai do meu nodo
+	x = t->root; //meu nodo
 	
 	/*Procura o lugar do nodo, guardando o pai deste na variável y.*/
 	while(x != t->nill){
@@ -59,7 +59,7 @@ void insert(rbtree * t, int k){
 	n->p = y;
 	
 	//Se a arvore for vazia
-	if(y = t->nill){
+	if(y == t->nill){
 		t->root = n;
 	}
 	
@@ -130,6 +130,7 @@ void rotateRight(rbtree * t, node * x){
 	}
 }
 
+/*
 void arrange(rbtree * t, node * z){
 	while(z->p->c == RED){
 		if(z->p == z->p->p->left){
@@ -176,13 +177,13 @@ void arrange(rbtree * t, node * z){
 	}
 		
 //		z->root->left
-}
+}*/
 
 
 /*Imprime a árvore bonitinha*/
-void drawTree(node * n, int h){
-	if(n->left != NULL){
-		drawTree(n->left, h+1);	
+void drawTree(rbtree * t, node * n, int h){
+	if(n->left != t->nill){
+		drawTree(t, n->left, h+1);	
 	}
 
 	int i;
@@ -191,36 +192,36 @@ void drawTree(node * n, int h){
 	}
 	printf("%d\n", n->key);
 	
-	if(n->right != NULL){
-		drawTree(n->right, h+1);
+	if(n->right != t->nill){
+		drawTree(t, n->right, h+1);
 	}
 }
 
 //Percurso in Order
-void inOrder(node * r){
-	if(r!=NULL){
-		inOrder(r->left);
+void inOrder(rbtree * t, node * r){
+	if(r!=t->nill){
+		inOrder(t, r->left);
 		
 		printf("%d ", r->key);
 		
-		inOrder(r->right);
+		inOrder(t, r->right);
 	}	
 }
 
 //Percurso pre Order
-void preOrder(node * r){
-	if(r!=NULL){
+void preOrder(rbtree * t, node * r){
+	if(r!=t->nill){
 		printf("%d ", r->key);		
-		preOrder(r->left);				
-		preOrder(r->right);
+		preOrder(t, r->left);				
+		preOrder(t, r->right);
 	}	
 }
 
 //Percurso Pos Order
-void posOrder(node * r){
-	if(r!=NULL){
-		posOrder(r->left);
-		posOrder(r->right);
+void posOrder(rbtree * t, node * r){
+	if(r!=t->nill){
+		posOrder(t, r->left);
+		posOrder(t, r->right);
 		printf("%d ", r->key);
 		
 	}
@@ -239,9 +240,11 @@ int main(){
 	insert(t, 16);
 	insert(t, 11);
 	insert(t, 19);
-
-	//drawTree(t->root, 0);
-	inOrder(t->root);
+	
+	node * i = t->root;
+	
+	drawTree(t, t->root, 0);
+	inOrder(t, t->root);
 
 return 0;
 }
