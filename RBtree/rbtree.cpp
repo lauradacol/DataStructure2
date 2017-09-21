@@ -74,6 +74,21 @@ void insert(rbtree * t, int k){
 		
 }
 
+/*busca por uma chave k na árvore com raiz r
+caso a chave não estiver na árvore retorna NULL*/
+node * search(rbtree * t, node * r, int key){
+	
+	if(r == t->nill || r->key == key){
+		return r;
+	}
+	if(key <= r->key){
+		return search(t, r->left, key);	
+	}
+	
+	return search(t, r->right, key);
+}
+
+
 void rotateLeft(rbtree * t, node * x){
 	node * y = x->right;
 	x->right = y->left;
@@ -130,28 +145,30 @@ void rotateRight(rbtree * t, node * x){
 	}
 }
 
-/*
+
 void arrange(rbtree * t, node * z){
+	node * y;
+	
 	while(z->p->c == RED){
 		if(z->p == z->p->p->left){
-			y = z->p->p->right;
+			y = z->p->p->right; //tio
 			
 			if(y->c == RED){
 				y->c = BLACK;
-				z->pai = BLACK;
-				z->p->p = RED;
+				z->c = BLACK;
+				z->p->c = RED;
 				z = z->p->p;
 			}			
 			else{
 				if(z == z->p->right){
-					z = z->pai;
+					z = z->p;
 					rotateLeft(t,z);
 				}
 				
 				z->p->c = BLACK;
 				z->p->p->c = RED;
 				rotateRight(t, z->p->p);							
-			}
+			}						
 		}
 		
 		else{
@@ -159,13 +176,13 @@ void arrange(rbtree * t, node * z){
 			
 			if(y->c == RED){
 				y->c = BLACK;
-				z->pai = BLACK;
-				z->p->p = RED;
+				z->c = BLACK;
+				z->p->c = RED;
 				z = z->p->p;
 			}			
 			else{
 				if(z == z->p->left){
-					z = z->pai;
+					z = z->p;
 					rotateRight(t,z);
 				}
 				
@@ -173,11 +190,14 @@ void arrange(rbtree * t, node * z){
 				z->p->p->c = RED;
 				rotateLeft(t, z->p->p);								
 			}
-		}			
+		}
+		
+		z->c = BLACK;
+		z = z->p;						
 	}
 		
-//		z->root->left
-}*/
+	
+}
 
 
 /*Imprime a árvore bonitinha*/
@@ -188,9 +208,15 @@ void drawTree(rbtree * t, node * n, int h){
 
 	int i;
 	for(i=0; i<h; i++){
-		printf("  ");
+		printf("    ");
 	}
-	printf("%d\n", n->key);
+	
+	if(n->c == RED){
+		printf("R-%d\n", n->key);	
+	}
+	else{
+		printf("R-%d\n", n->key);		
+	}
 	
 	if(n->right != t->nill){
 		drawTree(t, n->right, h+1);
@@ -237,14 +263,16 @@ int main(){
 	insert(t, 9);
 	insert(t, 20);
 	insert(t, 17);
-	insert(t, 16);
 	insert(t, 11);
-	insert(t, 19);
+
 	
 	node * i = t->root;
 	
 	drawTree(t, t->root, 0);
-	inOrder(t, t->root);
+	printf("\n\n");
+
+	arrange(t, search(t, t->root, 17));
+	drawTree(t, t->root, 0);
 
 return 0;
 }

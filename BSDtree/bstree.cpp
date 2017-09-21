@@ -151,10 +151,16 @@ node ** getParent(node * v){
 void transplant(node * v, node * minV){
 	swap(&(minV->left), &(v->left));
 	swap(&(minV->right), &(v->right));
+	swap(getParent(v),getParent(minV));		
 	
-	swap(getParent(v),getParent(minV));
+	if(v->left == minV || v->right == minV){
+		swap(&(minV), &(v->parent));
+	}
 	
-	swap(&(minV->parent), &(v->parent));
+	else{
+		swap(&(minV->parent), &(v->parent));
+	}
+
 	
 }
 
@@ -184,7 +190,7 @@ void * deleteNode(node * r, int key){
 
 	//se v tem só um filho à esquerda
 	if(v->left != NULL && v->right == NULL){
-		transplant(v, v->right);
+		transplant(v, v->left);
 		deleteFolha(v->left);
 	}
 	
@@ -203,6 +209,64 @@ void * deleteNode(node * r, int key){
 	}
 	free(v);
 }
+
+node * getSuccessor(struct node* nodo){
+   node* aux = nodo;
+ 	
+ 	//FIND THE LEAF IN THE EXTREME LEFT
+    while (aux->left != NULL)
+        aux = aux->left;
+ 
+    return aux;
+}
+
+
+node * deleteV(node * root, int key){
+
+	//IF THE TREE IS EMPTY
+	if(root == NULL){
+		return root;
+	}
+
+	//IF THE KEY IS BIGGER -> GO TO THE RIGHT
+	if(key > root->key){
+		
+		root->right = deleteV(root->right, key);
+
+	//IF THE KEY IS SMALLER -> GO TO THE LEFT
+	}else if(key < root->key){
+		
+		root->left = deleteV(root->left, key);
+
+	//IF FINDS THE KEY
+	}else{
+		
+		//IF THE NODE HAVE 1 OR 2 CHILDS
+		if(root->left == NULL){
+			
+			node *temp = root->right;
+			return temp;
+
+		}else if(root->right == NULL){
+
+			node *temp = root->left;
+			return temp;
+
+		}
+		
+		//FIND THE SUCCESSOR
+		node * successor = getSuccessor(root->right);
+		
+		root->key = successor->key;
+
+		root->right = deleteV(root->right, successor->key);
+
+	}
+
+	return root;
+
+}
+
 
 int main(void){
 	
@@ -237,8 +301,8 @@ int main(void){
 	printf("############ DELETANDO O 3 ##############\n");
 	printf("#########################################\n\n");	
 
-	int x = 2;
-	deleteNode(root, x);
+	int x = 10;
+	deleteV(root, x);
 	
 	printf("PERCURSO IN ORDER APÓS DA DELEÇÃO\n");
 	inOrder(root);
