@@ -110,107 +110,7 @@ node * search(node * r, int key){
 	return search(r->right, key);
 }
 
-/*Procura o menor nodo de uma sub-arvore*/
-node * minTree(node * r){
-	node * min;
-	if(r->right != NULL){
-		min = r->right;	
-	}
-	
-	else{
-		min = r;
-	}
-	
-	while(min->left !=NULL){
-		min = min->left;
-	}
-	
-	return min;
-}
-
-/*Troca dois ponteiros de lugar*/
-void swap(node ** a, node ** b){
-	node * aux1 = *a;
-	node * aux2 = *b;
-	*a = aux2;
-	*b = aux1;	
-	
-}
-
-/*Retorna o ponteiro para o pai*/
-node ** getParent(node * v){
-	if(v->parent->left == v){	
-		return &(v->parent->left);
-	}
-	else{
-		return &(v->parent->right);	
-	}
-}
-
-/*Trasplanta dois nodos*/
-void transplant(node * v, node * minV){
-	swap(&(minV->left), &(v->left));
-	swap(&(minV->right), &(v->right));
-	swap(getParent(v),getParent(minV));		
-	
-	if(v->left == minV || v->right == minV){
-		swap(&(minV), &(v->parent));
-	}
-	
-	else{
-		swap(&(minV->parent), &(v->parent));
-	}
-
-	
-}
-
-/*Deleta um nodo se ele é uma folha*/
-void deleteFolha(node * v){
-	node ** pai = getParent(v);
-	*pai = NULL;	
-
-/*		
-	if(v->parent->left == v){
-		v->parent->left = NULL;
-	}	
-	else{
-		v->parent->right = NULL;
-	}
-	*/		
-}	
-
-/*Deleta o nodo*/
-void * deleteNode(node * r, int key){
-	node * v = search(r, key);
-	
-	//se v é uma folha
-	if(v->left == NULL && v->right == NULL){
-		deleteFolha(v);
-	}
-
-	//se v tem só um filho à esquerda
-	if(v->left != NULL && v->right == NULL){
-		transplant(v, v->left);
-		deleteFolha(v->left);
-	}
-	
-	//se v tem só um filho à direita
-	else if(v->right != NULL && v->left == NULL){
-		transplant(v, v->right);
-		deleteFolha(v->right);
-	}
-	
-	else{
-		//procura o menor nodo da sub-arvore cuja v é a raiz
-		node * minV = minTree(v);
-		transplant(v, minV);
-		deleteFolha(v);
-		
-	}
-	free(v);
-}
-
-node * getSuccessor(struct node* nodo){
+node * getSuccessor(node * nodo){
    node* aux = nodo;
  	
  	//FIND THE LEAF IN THE EXTREME LEFT
@@ -255,12 +155,9 @@ node * deleteV(node * root, int key){
 		}
 		
 		//FIND THE SUCCESSOR
-		node * successor = getSuccessor(root->right);
-		
+		node * successor = getSuccessor(root->right);		
 		root->key = successor->key;
-
 		root->right = deleteV(root->right, successor->key);
-
 	}
 
 	return root;
