@@ -74,7 +74,174 @@ void insert(rbtree * t, int k){
 		
 }
 
+void rotateLeft(rbtree * t, node * x){
+	node * y = x->right;
+	x->right = y->left;
+	
+	if(y->left != t->nill){
+		y->left->p = x;
+	}
+	
+	y->p = x->p;
+	
+	//se x é a raiz
+	if(x->p == t->nill){
+		t->root = y;
+	}
+	
+	else{
+		if(x == x->p->left){
+			x->p->left = y;
+		}
+		else{
+			x->p->right = y;
+		}
+	
+	y->left = x;
+	x->p = y;	
+	}
+}
+
+void rotateRight(rbtree * t, node * x){
+	node * y = x->left;
+	x->left = y->right;
+	
+	if(y->right != t->nill){
+		y->right->p = x;
+	}
+	
+	y->p = x->p;
+	
+	//se x é a raiz
+	if(x->p == t->nill){
+		t->root = y;
+	}
+	
+	else{
+		if(x == x->p->right){
+			x->p->right = y;
+		}
+		else{
+			x->p->left = y;
+		}
+	
+	y->right = x;
+	x->p = y;	
+	}
+}
+
+void arrange(rbtree * t, node * z){
+	while(z->p->c == RED){
+		if(z->p == z->p->p->left){
+			y = z->p->p->right;
+			
+			if(y->c == RED){
+				y->c = BLACK;
+				z->pai = BLACK;
+				z->p->p = RED;
+				z = z->p->p;
+			}			
+			else{
+				if(z == z->p->right){
+					z = z->pai;
+					rotateLeft(t,z);
+				}
+				
+				z->p->c = BLACK;
+				z->p->p->c = RED;
+				rotateRight(t, z->p->p);							
+			}
+		}
+		
+		else{
+			y = z->p->p->left;
+			
+			if(y->c == RED){
+				y->c = BLACK;
+				z->pai = BLACK;
+				z->p->p = RED;
+				z = z->p->p;
+			}			
+			else{
+				if(z == z->p->left){
+					z = z->pai;
+					rotateRight(t,z);
+				}
+				
+				z->p->c = BLACK;
+				z->p->p->c = RED;
+				rotateLeft(t, z->p->p);								
+			}
+		}			
+	}
+		
+//		z->root->left
+}
+
+
+/*Imprime a árvore bonitinha*/
+void drawTree(node * n, int h){
+	if(n->left != NULL){
+		drawTree(n->left, h+1);	
+	}
+
+	int i;
+	for(i=0; i<h; i++){
+		printf("  ");
+	}
+	printf("%d\n", n->key);
+	
+	if(n->right != NULL){
+		drawTree(n->right, h+1);
+	}
+}
+
+//Percurso in Order
+void inOrder(node * r){
+	if(r!=NULL){
+		inOrder(r->left);
+		
+		printf("%d ", r->key);
+		
+		inOrder(r->right);
+	}	
+}
+
+//Percurso pre Order
+void preOrder(node * r){
+	if(r!=NULL){
+		printf("%d ", r->key);		
+		preOrder(r->left);				
+		preOrder(r->right);
+	}	
+}
+
+//Percurso Pos Order
+void posOrder(node * r){
+	if(r!=NULL){
+		posOrder(r->left);
+		posOrder(r->right);
+		printf("%d ", r->key);
+		
+	}
+}
+
 int main(){
+
+	rbtree * t = start();
+	insert(t, 10);
+	insert(t, 8);
+	insert(t, 15);
+	insert(t, 5);
+	insert(t, 9);
+	insert(t, 20);
+	insert(t, 17);
+	insert(t, 16);
+	insert(t, 11);
+	insert(t, 19);
+
+	//drawTree(t->root, 0);
+	inOrder(t->root);
 
 return 0;
 }
