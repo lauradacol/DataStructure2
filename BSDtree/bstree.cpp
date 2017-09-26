@@ -113,7 +113,7 @@ node * search(node * r, int key){
 node * getSuccessor(node * nodo){
    node* aux = nodo;
  	
- 	//FIND THE LEAF IN THE EXTREME LEFT
+ 	//Acha o nodo mais à esquerda (menor)
     while (aux->left != NULL)
         aux = aux->left;
  
@@ -123,25 +123,25 @@ node * getSuccessor(node * nodo){
 
 node * deleteV(node * root, int key){
 
-	//IF THE TREE IS EMPTY
+	//Se a arvore está vazia
 	if(root == NULL){
 		return root;
 	}
 
-	//IF THE KEY IS BIGGER -> GO TO THE RIGHT
+	//Se key for maior, vai para direita
 	if(key > root->key){
 		
 		root->right = deleteV(root->right, key);
 
-	//IF THE KEY IS SMALLER -> GO TO THE LEFT
+	//Se key for menor, vai para esquerda
 	}else if(key < root->key){
 		
 		root->left = deleteV(root->left, key);
 
-	//IF FINDS THE KEY
+	//Se achar a chave
 	}else{
 		
-		//IF THE NODE HAVE 1 OR 2 CHILDS
+		//Se o nodo tem filhos
 		if(root->left == NULL){
 			
 			node *temp = root->right;
@@ -154,7 +154,7 @@ node * deleteV(node * root, int key){
 
 		}
 		
-		//FIND THE SUCCESSOR
+		//Encontrar o sucessor da sub-árvore a direita
 		node * successor = getSuccessor(root->right);		
 		root->key = successor->key;
 		root->right = deleteV(root->right, successor->key);
