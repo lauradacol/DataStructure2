@@ -30,65 +30,6 @@ rbtree * start(){
 	return t;
 }
 
-void insert(rbtree * t, int k){
-	node * n = (node *)malloc(sizeof(node));
-	n->key = k;
-	n->right = n->left = t->nill;
-	n->c = RED;
-	
-	//auxiliares para guardar o nodo (y) e o pai do nodo (x)
-	node * y;
-	node * x;
-	
-	y = t->nill; //pai do meu nodo
-	x = t->root; //meu nodo
-	
-	/*Procura o lugar do nodo, guardando o pai deste na variável y.*/
-	while(x != t->nill){
-		y = x;
-		
-		if(k < x->key){
-			x = x->left;
-		}
-		
-		else{
-			x = x->right;
-		}		
-	}
-	
-	n->p = y;
-	
-	//Se a arvore for vazia
-	if(y == t->nill){
-		t->root = n;
-	}
-	
-	/*O y é o pai do nodo a ser inserido, que foi guardado no while. 
-	Agora se verifica se o nodo vai a direita ou esquerda do y*/
-	if(k < y->key){
-		y->left = n;
-	}
-	else{
-		y->right = n;
-	}
-		
-}
-
-/*busca por uma chave k na árvore com raiz r
-caso a chave não estiver na árvore retorna NULL*/
-node * search(rbtree * t, node * r, int key){
-	
-	if(r == t->nill || r->key == key){
-		return r;
-	}
-	if(key <= r->key){
-		return search(t, r->left, key);	
-	}
-	
-	return search(t, r->right, key);
-}
-
-
 void rotateLeft(rbtree * t, node * x){
 	node * y = x->right;
 	x->right = y->left;
@@ -145,7 +86,21 @@ void rotateRight(rbtree * t, node * x){
 	}
 }
 
+/*busca por uma chave k na árvore com raiz r
+caso a chave não estiver na árvore retorna NULL*/
+node * search(rbtree * t, node * r, int key){
+	
+	if(r == t->nill || r->key == key){
+		return r;
+	}
+	if(key <= r->key){
+		return search(t, r->left, key);	
+	}
+	
+	return search(t, r->right, key);
+}
 
+/*
 void arrange(rbtree * t, node * z){
 	node * y;
 	
@@ -195,10 +150,110 @@ void arrange(rbtree * t, node * z){
 		z->c = BLACK;
 		z = z->p;						
 	}
+			
+}*/
+
+/*Caso 1: x é a raiz*/
+void arrangeCase1(rbtree * t, node * n){
+	n->c = BLACK;
+}
+
+/*Caso 2: tio do x é red*/
+node * arrangeCase2(rbtree * t, node * n){
+	//pinta o pai de preto
+	n->p->c = BLACK;
+	
+	//descobre o tio
+	node * tio;
+	if(n->p == n->p->p->left){
+		tio = n->p->p->right;
+	}
+	else{
+		tio = n->p->p->left;
+	}
+	tio->c = BLACK;
+	
+	n->p->p->c = RED;
+	return n->p->p;	
+}
+
+/*Caso 3: tio do x é preto e vô-pai-x formam um triângulo*/
+node * arrangeCase3(rbtree * t, node * n){
+	node * aux;
+	if(n == n->p->left){
+		rotateRight(t, n);
+		aux = n->right;
+	}	
+	else{
+		rotateLeft(t, n);
+		aux = n->left;	
+	}
+	
+	return aux;
+}
+
+/*Caso 4: tio do x é preto e vô-pai-x formam uma linha*/
+void arrangeCase4(rbtree * t, node * n){
+	n->p->c = BLACK;
+	n->p->p->c = RED;
+	
+	if(n = n->p->left){
+		rotateRight(t,n->p->p);
+	}
 		
+	else{
+		rotateLeft(t,n->p->p);
+	}		 
+}
+
+void arrange(rbtree * t, node * n){
 	
 }
 
+void insert(rbtree * t, int k){
+	node * n = (node *)malloc(sizeof(node));
+	n->key = k;
+	n->right = n->left = t->nill;
+	n->c = RED;
+	
+	//auxiliares para guardar o nodo (y) e o pai do nodo (x)
+	node * y;
+	node * x;
+	
+	y = t->nill; //pai do meu nodo
+	x = t->root; //meu nodo
+	
+	/*Procura o lugar do nodo, guardando o pai deste na variável y.*/
+	while(x != t->nill){
+		y = x;
+		
+		if(k < x->key){
+			x = x->left;
+		}
+		
+		else{
+			x = x->right;
+		}		
+	}
+	
+	n->p = y;
+	
+	//Se a arvore for vazia
+	if(y == t->nill){
+		t->root = n;
+		arrangeCase1(t,n);
+	}
+	
+	/*O y é o pai do nodo a ser inserido, que foi guardado no while. 
+	Agora se verifica se o nodo vai a direita ou esquerda do y*/	
+	if(k < y->key){
+		y->left = n;
+	}
+	else{
+		y->right = n;
+	}
+			
+}
 
 /*Imprime a árvore bonitinha*/
 void drawTree(rbtree * t, node * n, int h){
@@ -215,7 +270,7 @@ void drawTree(rbtree * t, node * n, int h){
 		printf("R-%d\n", n->key);	
 	}
 	else{
-		printf("R-%d\n", n->key);		
+		printf("B-%d\n", n->key);		
 	}
 	
 	if(n->right != t->nill){
@@ -264,15 +319,10 @@ int main(){
 	insert(t, 20);
 	insert(t, 17);
 	insert(t, 11);
-
-	
-	node * i = t->root;
-	
+		
 	drawTree(t, t->root, 0);
 	printf("\n\n");
 
-	arrange(t, search(t, t->root, 17));
-	drawTree(t, t->root, 0);
 
 return 0;
 }
