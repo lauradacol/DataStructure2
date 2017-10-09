@@ -23,6 +23,7 @@ rbtree * start(){
 	t->nill->p = NULL;
 	t->nill->left = NULL;
 	t->nill->right = NULL;
+	t->nill->c = BLACK;
 	
 	/*Aponta a raiz da nova arvore para o nil*/
 	t->root = t->nill;
@@ -214,7 +215,7 @@ node * arrangeCase4(rbtree * t, node * n){
 	n->p->c = BLACK;
 	n->p->p->c = RED;
 	
-	if(n = n->p->left){
+	if(n == n->p->left){
 		rotateRight(t,n->p->p);
 	}
 		
@@ -245,7 +246,7 @@ int testaCaso3(rbtree * t, node * n){
 }
 
 void arrange(rbtree * t, node * n){
-	while(n->p->c == RED){
+	while(n->p->c == RED && n != t->root){
 		/*Guardando informação do tio*/
 		node * tio;
 		if(n->p == n->p->p->left){
@@ -261,6 +262,7 @@ void arrange(rbtree * t, node * n){
 		/*Caso 2*/
 		if(tio->c == RED){
 			n = arrangeCase2(t, n);
+			continue;
 		}
 		
 		/*Caso 3*/
@@ -388,12 +390,17 @@ int main(){
 
 	insert(t, 8);
 	insert(t, 15);
+	
+	//drawTree(t, t->root, 0);
+	
 	insert(t, 17);
-/*	insert(t, 9);
+	insert(t, 9);
 	insert(t, 20);
-	insert(t, 17);
+	//insert(t, 17);
 	insert(t, 11);
-*/
+	insert(t, 25);
+	insert(t, 16);	
+
 	
 	drawTree(t, t->root, 0);
 	printf("\n\n");
