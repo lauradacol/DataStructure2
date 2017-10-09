@@ -154,8 +154,9 @@ void arrange(rbtree * t, node * z){
 }*/
 
 /*Caso 1: x é a raiz*/
-void arrangeCase1(rbtree * t, node * n){
-	n->c = BLACK;
+node * arrangeCase1(rbtree * t, node * n){
+	n->c = BLACK;	
+	return n;
 }
 
 /*Caso 2: tio do x é red*/
@@ -177,7 +178,9 @@ node * arrangeCase2(rbtree * t, node * n){
 	return n->p->p;	
 }
 
-/*Caso 3: tio do x é preto e vô-pai-x formam um triângulo*/
+/*Caso 3: tio do x é preto e vô-pai-x formam um triângulo
+ * Vai virar um caso 4
+ * */
 node * arrangeCase3(rbtree * t, node * n){
 	node * aux;
 	if(n == n->p->left){
@@ -193,7 +196,7 @@ node * arrangeCase3(rbtree * t, node * n){
 }
 
 /*Caso 4: tio do x é preto e vô-pai-x formam uma linha*/
-void arrangeCase4(rbtree * t, node * n){
+node * arrangeCase4(rbtree * t, node * n){
 	n->p->c = BLACK;
 	n->p->p->c = RED;
 	
@@ -203,11 +206,59 @@ void arrangeCase4(rbtree * t, node * n){
 		
 	else{
 		rotateLeft(t,n->p->p);
-	}		 
+	}	
+	
+	return n;	 
+}
+
+/*Testa se vô-tio-n formam um triangulo*/
+int testaCaso3(rbtree * t, node * n){
+	int triangulo = 0;
+	
+	if((n == n->p->left) && (n->p == n->p->p->right)){
+		triangulo = 1;
+	}
+	
+	else if((n == n->p->right) && (n->p == n->p->p->left)){
+		triangulo = 1;
+	}
+	
+	return triangulo;
 }
 
 void arrange(rbtree * t, node * n){
+	while(n->p->c == RED){
+		/*Guardando informação do tio*/
+		node * tio;
+		if(n->p == n->p->p->left){
+			tio = n->p->p->right;
+		}
+		else if(n->p == n->p->p->right){
+			tio = n->p->p->left;
+		}
+		else{
+			tio = t->nill;
+		}
+		
+		/*Caso 2*/
+		if(tio->c == RED){
+			n = arrangeCase2(t, n);
+		}
+		
+		/*Caso 3*/
+		if((tio->c == BLACK) && (testaCaso3(t, n) == 1)){
+			n = arrangeCase3(t, n);
+		}
+		
+		/*Caso 4*/
+		if((tio->c == BLACK) && (testaCaso3(t,n) == 0)){
+			n = arrangeCase4(t, n);
+		}		
+	}
 	
+	/*Caso 1*/
+	n = arrangeCase1(t, n);
+		
 }
 
 void insert(rbtree * t, int k){
@@ -252,6 +303,8 @@ void insert(rbtree * t, int k){
 	else{
 		y->right = n;
 	}
+	
+	arrange(t,n);
 			
 }
 

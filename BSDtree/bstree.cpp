@@ -182,6 +182,7 @@ int main(void){
 	root = insert(root,7);
 	root = insert(root, 20);	
 	
+	/*	
 	printf("PERCURSO IN ORDER ANTES DA DELEÇÃO\n");
 	inOrder(root);
 	
@@ -190,10 +191,13 @@ int main(void){
 	
 	printf("\n\nPERCURSO POS ORDER ANTES DA DELEÇÃO\n");
 	posOrder(root);		
-	
+	*/
 	printf("\n\nDESENHO DA ÁRVORE ANTES DA DELEÇÃO\n");	
 	drawTree(root, 0);	
 	
+	printf("Sucessor do 16 é o %d\n", (getSuccessor(search(root, 3)))->key);
+	
+	/*
 	printf("\n#########################################\n");
 	printf("############ DELETANDO O 3 ##############\n");
 	printf("#########################################\n\n");	
@@ -212,7 +216,7 @@ int main(void){
 	
 	printf("\n\nDESENHO DA ÁRVORE APÓS DA DELEÇÃO\n");	
 	drawTree(root, 0);
-	
+	*/
 	return 0;
 }
 
