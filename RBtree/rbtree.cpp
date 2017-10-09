@@ -153,6 +153,20 @@ void arrange(rbtree * t, node * z){
 			
 }*/
 
+/*Retorna a altura da árvore*/
+int hasGrampa(rbtree * t, node * n){
+	int grampa = 0;
+	
+	if(n->p != t->nill){
+		if(n->p->p != t->nill){
+			grampa = 1;
+		}
+	}
+	
+	return grampa;	
+}
+
+
 /*Caso 1: x é a raiz*/
 node * arrangeCase1(rbtree * t, node * n){
 	n->c = BLACK;	
@@ -213,14 +227,18 @@ node * arrangeCase4(rbtree * t, node * n){
 
 /*Testa se vô-tio-n formam um triangulo*/
 int testaCaso3(rbtree * t, node * n){
-	int triangulo = 0;
+	int triangulo;
 	
 	if((n == n->p->left) && (n->p == n->p->p->right)){
 		triangulo = 1;
 	}
-	
+
 	else if((n == n->p->right) && (n->p == n->p->p->left)){
 		triangulo = 1;
+	}
+	
+	else{
+		triangulo = 0;
 	}
 	
 	return triangulo;
@@ -304,8 +322,10 @@ void insert(rbtree * t, int k){
 		y->right = n;
 	}
 	
-	arrange(t,n);
-			
+	if(hasGrampa(t, n) == 1){
+		arrange(t,n);
+	}
+		
 }
 
 /*Imprime a árvore bonitinha*/
@@ -365,14 +385,16 @@ int main(){
 
 	rbtree * t = start();
 	insert(t, 10);
+
 	insert(t, 8);
 	insert(t, 15);
-	insert(t, 5);
-	insert(t, 9);
+	insert(t, 17);
+/*	insert(t, 9);
 	insert(t, 20);
 	insert(t, 17);
 	insert(t, 11);
-		
+*/
+	
 	drawTree(t, t->root, 0);
 	printf("\n\n");
 
