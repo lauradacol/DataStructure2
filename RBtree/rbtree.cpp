@@ -101,60 +101,7 @@ node * search(rbtree * t, node * r, int key){
 	return search(t, r->right, key);
 }
 
-/*
-void arrange(rbtree * t, node * z){
-	node * y;
-	
-	while(z->p->c == RED){
-		if(z->p == z->p->p->left){
-			y = z->p->p->right; //tio
-			
-			if(y->c == RED){
-				y->c = BLACK;
-				z->c = BLACK;
-				z->p->c = RED;
-				z = z->p->p;
-			}			
-			else{
-				if(z == z->p->right){
-					z = z->p;
-					rotateLeft(t,z);
-				}
-				
-				z->p->c = BLACK;
-				z->p->p->c = RED;
-				rotateRight(t, z->p->p);							
-			}						
-		}
-		
-		else{
-			y = z->p->p->left;
-			
-			if(y->c == RED){
-				y->c = BLACK;
-				z->c = BLACK;
-				z->p->c = RED;
-				z = z->p->p;
-			}			
-			else{
-				if(z == z->p->left){
-					z = z->p;
-					rotateRight(t,z);
-				}
-				
-				z->p->c = BLACK;
-				z->p->p->c = RED;
-				rotateLeft(t, z->p->p);								
-			}
-		}
-		
-		z->c = BLACK;
-		z = z->p;						
-	}
-			
-}*/
-
-/*Retorna a altura da árvore*/
+/*Retorna 1 se o nodo tem um avô*/
 int hasGrampa(rbtree * t, node * n){
 	int grampa = 0;
 	
@@ -197,14 +144,14 @@ node * arrangeCase2(rbtree * t, node * n){
  * Vai virar um caso 4
  * */
 node * arrangeCase3(rbtree * t, node * n){
-	node * aux;
+	node * aux = n->p;
 	if(n == n->p->left){
-		rotateRight(t, n);
-		aux = n->right;
+		rotateRight(t, n->p);
+//		aux = n->right;
 	}	
 	else{
-		rotateLeft(t, n);
-		aux = n->left;	
+		rotateLeft(t, n->p);
+//		aux = n->left;	
 	}
 	
 	return aux;
@@ -277,8 +224,9 @@ void arrange(rbtree * t, node * n){
 	}
 	
 	/*Caso 1*/
-	n = arrangeCase1(t, n);
-		
+	if(n == t->root){
+		n = arrangeCase1(t, n);
+	}	
 }
 
 void insert(rbtree * t, int k){
@@ -332,8 +280,8 @@ void insert(rbtree * t, int k){
 
 /*Imprime a árvore bonitinha*/
 void drawTree(rbtree * t, node * n, int h){
-	if(n->left != t->nill){
-		drawTree(t, n->left, h+1);	
+	if(n->right != t->nill){
+		drawTree(t, n->right, h+1);	
 	}
 
 	int i;
@@ -348,8 +296,8 @@ void drawTree(rbtree * t, node * n, int h){
 		printf("B-%d\n", n->key);		
 	}
 	
-	if(n->right != t->nill){
-		drawTree(t, n->right, h+1);
+	if(n->left != t->nill){
+		drawTree(t, n->left, h+1);
 	}
 }
 
@@ -389,17 +337,14 @@ int main(){
 	insert(t, 10);
 
 	insert(t, 8);
-	insert(t, 15);
-	
-	//drawTree(t, t->root, 0);
-	
+	insert(t, 15);	
 	insert(t, 17);
 	insert(t, 9);
 	insert(t, 20);
-	//insert(t, 17);
 	insert(t, 11);
 	insert(t, 25);
 	insert(t, 16);	
+	insert(t, 16);
 
 	
 	drawTree(t, t->root, 0);
