@@ -69,7 +69,7 @@ void rotateRight(rbtree * t, node * x){
 	
 	y->p = x->p;
 	
-	//se x é a raiz
+	//se o x é a raiz
 	if(x->p == t->nill){
 		t->root = y;
 	}
@@ -146,12 +146,12 @@ node * arrangeCase2(rbtree * t, node * n){
 node * arrangeCase3(rbtree * t, node * n){
 	node * aux = n->p;
 	if(n == n->p->left){
-		rotateRight(t, n->p);
-//		aux = n->right;
+		rotateRight(t, aux);
+	//	aux = n->right;
 	}	
 	else{
-		rotateLeft(t, n->p);
-//		aux = n->left;	
+		rotateLeft(t, aux);
+		//aux = n->left;	
 	}
 	
 	return aux;
