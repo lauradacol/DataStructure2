@@ -34,7 +34,7 @@ Tree * init ( FILE * f ){
 	t->pos = ftell(f);	
 
 	/**Dá onde vem essa função?*/
-	fwrite(t, sizeof(Tree), 1, f);
+	fwrite(t->r, sizeof(Node), 1, f);
 
 	return t;	
 }
