@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <iostream>
 using namespace std;
 
 //Grau da árvore
@@ -8,21 +9,25 @@ struct Node {
 	long my_pos;
 	int size = 0;
 	int values[2*T] = {0};
-	long sons[2*T+1];
+	Node * sons[2*T+1];
 
-	//Retorna true se não há filhos (se o valor é -1)
-	bool leaf() {return sons[0] == -1;}
+	//Retorna true se não há filhos
+	bool isLeaf() {return sons[0] == NULL;}
 
 	//Preenche o vetor de filhos com -1 para indicar que está vazio
+	/*
 	Node() {
 		for(int i = 0; i < 2*T; ++i) sons[i] = -1;
-	}
+	}*/
 
 	//Retorna true se o nodo está vazio
 	bool isEmpty() {return size == 0;}
 
-	//Se o nodo estiver vazio, retorna false. Se não, insere a chave e retorna true
-	int insertLeaf(int key){
+	//Retorna true se o nodo está cheio
+	bool isFull() {return size >= 2*T;}
+
+	//Procura a posição da chave, desloca as outras chaves para frente e insere
+	void insertLeaf(int key){
 		int i=0;
 		for(i=0; i<size && (values[i] < key); i++);
 				
@@ -34,42 +39,98 @@ struct Node {
 		size++;
 	}
 	
+	//Imprime o nodo
 	void printNodo(){
-		for(int i=0; i<2*T; i++){
+		printf("Nodo: ");
+		for(int i=0; i<size; i++){
 			printf("%d ", values[i]);
 		}
 		printf("\n");
+	}
+	
+	void printFilho(){
+		printf("Filhos:\n");
+		if(sons[0] != NULL){
+			for(int i=0; sons[i] != NULL; i++){			
+				sons[i]->printNodo();
+			}	
+			printf("\n");
+		}
+		else{
+			printf("Sem filhos\n");
+		}		
+		
 	}	
   
 };
 
 struct Tree{
-	Node * r;
+	Node * root;
 	long position;
+	
+	//Retorna true se a árvore está vazia
+	bool isEmpty() {return root == NULL;}
+	
+	//Insere na raiz
+	void insertRoot(int key){		
+		this->root = new Node();
+		root->insertLeaf(key);
+		//return this->root;
+	}
+	
+	//Achar o nodo folha correto para a chave
+	Node * findNode(Node * parentNode, int key){
+
+		//Enquanto o nodo não for folha
+		while(!(parentNode->isLeaf())){
+			int i;
+			//Encontra a posição no vetor de filhos de parentNode 			
+			for(i=0; (i<parentNode->size && key>parentNode->values[i]); i++);
+			
+			//Chama recursivamente a função para o nodo filho
+			findNode(parentNode->sons[i], key);						
+		}
+		
+		parentNode->insertLeaf(key);
+		//parentNode.split();		
+		return parentNode;			
+	}
+	
+	//Função de inserir
+	void * insert(int key){
+		if(this->isEmpty()){
+			insertRoot(key);
+		}
+		else{
+			findNode(root,key)->insertLeaf(key);
+		}
+		
+		//this->isEmpty() ? insertRoot(key) : findNode(root, key);
+	}
 };
 
-/*
-Tree * initTree(){
-	Tree * t = malloc(sizeof(Tree));
-	t->r = malloc(sizeof(Node));	
-	
-	return t;	
-}*/
-
 int main(){
-	Node n;
 	
-	n.insertLeaf(3);
-	n.printNodo();	
-	n.insertLeaf(5);
-	n.printNodo();	
-	n.insertLeaf(4);
-	n.printNodo();			
-	n.insertLeaf(1);
-	n.insertLeaf(5);
-	n.printNodo();
+	Tree * t = new Tree();
+		
+	t->insert(6);
 	
+	Node * n1 = new Node();
+	n1->insertLeaf(4);
+	t->root->sons[0] = n1;
 	
-			
+	Node * n2 = new Node();
+	n2->insertLeaf(8);
+	n2->insertLeaf(20);
+	t->root->sons[1] = n2;
+	
+	//cout << (t->root->isLeaf() ? "É folha" : "Não é folha");
+	
+	t->insert(10);			
+	t->root->printNodo();
+	t->root->printFilho();	
+				
 }
+
+
 
