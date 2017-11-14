@@ -12,7 +12,7 @@ struct Node {
 	long my_pos;
 	int size = 0;
 	int values[2*T] = {0};
-	Node * sons[2*T+1];
+	Node * sons[2*T];
 
 	//Retorna true se não há filhos
 	bool isLeaf() {return sons[0] == NULL;}
@@ -61,40 +61,39 @@ struct Node {
 	}
 	
 	//Dar split no nodo, se ele tá cheio
-	Node * split(){
+	int split(){
 		//Se está cheio, splitar
 		if(this->isFull()){
-			Node parent = new Node;
+			Node right = new Node;
 			Node rightSon = new Node;
 			
-			parent->values[0] = this.values[S];
-			
-			//Copia os valores para o rightSon
-			j = 0;
+			//Copiar os valores para o right
+			c = 0;
 			for(int i=S+1; i<size; i++){
-				rightSon->values[j] = this.values[i];
-				j++;
-			}
-			
-			//Apaga os valores do nodo original
-			for(int i=S; i<size; i++){
+				//copia para o nodo novo
+				right->values[c] = this.values[i];				
+				//coloca os valores do nodo antigo como zero (vazio)
 				this.values[i] = 0;
+				c++;
 			}
-			size = S;
+						
+			//Copiar os valores para o rightSon
+			c = 0;
+			for(int i=S+1; i<size; i++){
+				//copa para o nodo novo de filhos
+				rightSon->sons[c] = this.sons[i];
+				//coloca os valores do nodo antigo de filhos com null
+				this.sons[i] = NULL; 
+				c++;
+			}
 			
-			//Arruma os filhos
-			parent->sons[0] = this;
-			parent->sons[1] = rightSon;
-			
-			return parent;			
-		}
-		
-		//Se o nodo não está cheio
-		else{
-			return this;
+			int newParent = this.values[S];
+			this.values[S] = 0;
+									
+			return newParent;			
 		}
 	}
-	
+
 	//Imprime o nodo
 	void printNodo(){
 		printf("Nodo: ");
